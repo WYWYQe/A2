@@ -1,255 +1,296 @@
+import java.util.Queue;
+import java.util.LinkedList;
+import java.util.Iterator;
+
 /**
- * Ride class: Implements the RideInterface to manage individual theme park attractions (e.g., roller coasters, carousels)
- * Contains core functionalities for attraction details, waiting queues, ride history, and operational cycles
+ * Ride Class: Manages theme park attractions and implements RideInterface
+ * Integrates core features including basic attraction info, waiting queue (Part3), operator association,
+ * ride history tracking (Part4A), and operational cycle management (Part5)
  */
 public class Ride implements RideInterface {
-    // Core instance variables (Part1 requirements)
-    private String rideName;    // Name of the attraction (e.g., "Roller Coaster")
-    private String rideType;    // Type of attraction (e.g., "Thrill Ride", "Family Ride")
-    private Employee operator;  // Attendant responsible for operating the ride (Part1 mandatory)
+    // --------------------------
+    // Part1 Requirements: Minimum 3 instance variables including 1 Employee type
+    // --------------------------
+    private String rideName;       // Name of the attraction (e.g., "Speed Roller Coaster")
+    private String rideType;       // Type of attraction (e.g., "Roller Coaster", "Water Ride")
+    private Employee operator;     // Attraction operator (Part1 mandatory - determines operational status)
+    private int maxRider;          // Maximum riders per cycle (Defined early for Part5 to avoid future modifications)
+    private int numOfCycles;       // Number of completed operational cycles (Defined early for Part5, default 0)
 
     // --------------------------
-    // Incremental attributes for Part3-5 (defined in Part2, implemented in later phases)
+    // Part3 Requirements: Queue<Visitor> for waiting visitors (FIFO)
     // --------------------------
-    // Part3: Waiting queue (FIFO storage for visitors waiting to ride)
-    private java.util.Queue<Visitor> waitingLine;
-    // Part4A: Ride history (stores visitors who completed rides, implemented with LinkedList)
-    private java.util.LinkedList<Visitor> rideHistory;
-    // Part5: Operational cycle attributes (maxRider = max passengers per cycle, numOfCycles = total cycles operated)
-    private int maxRider;
-    private int numOfCycles;
+    private Queue<Visitor> waitingLine;
 
-    // 1. Default constructor (Part1): Initializes collections to prevent null pointers
+    // --------------------------
+    // Part4A Requirements: LinkedList<Visitor> for ride history (Defined early for future expansion)
+    // --------------------------
+    private LinkedList<Visitor> rideHistory;
+
+    // --------------------------
+    // Part1 Requirements: Default constructor + parameterized constructor (covers all instance variables)
+    // --------------------------
+
+    /**
+     * Default constructor: Initializes collections and default values
+     * Prevents null pointer exceptions while meeting Part1 "default constructor" requirement
+     */
     public Ride() {
-        this.waitingLine = new java.util.LinkedList<>();  // Queue implemented with LinkedList
-        this.rideHistory = new java.util.LinkedList<>();  // Ride history stored in LinkedList
-        this.numOfCycles = 0;  // Initialize cycle count to zero
-        this.maxRider = 2;     // Default capacity: 2 riders per cycle (modifiable via setter)
+        this.waitingLine = new LinkedList<>();   // Part3: Initialize waiting queue
+        this.rideHistory = new LinkedList<>();   // Part4A: Initialize ride history
+        this.maxRider = 1;                       // Part5: Default 1 rider per cycle (meets "minimum 1 rider" requirement)
+        this.numOfCycles = 0;                    // Part5: Default cycle count set to 0
     }
 
-    // 2. Parameterized constructor (Part1): Initializes basic info and collections
-    // @param rideName Name of the attraction
-    // @param rideType Type/classification of the attraction
-    // @param operator Employee assigned to operate the ride
-    // @param maxRider Maximum riders per operational cycle
-    public Ride(String rideName, String rideType, Employee operator, int maxRider) {
+    /**
+     * Parameterized constructor: Initializes all instance variables (matches creation logic in AssignmentTwo)
+     * Parameter order: rideName → rideType → maxRider → operator
+     * @param rideName Name of the attraction (non-null)
+     * @param rideType Type/classification of the attraction (non-null)
+     * @param maxRider Maximum riders per operational cycle (≥1)
+     * @param operator Employee responsible for operating the attraction (non-null for operational status)
+     */
+    public Ride(String rideName, String rideType, int maxRider, Employee operator) {
+        // Initialize Part1 core attributes
         this.rideName = rideName;
         this.rideType = rideType;
         this.operator = operator;
-        // Initialize collections and cycle attributes
-        this.waitingLine = new java.util.LinkedList<>();
-        this.rideHistory = new java.util.LinkedList<>();
+        // Initialize Part5 attributes with validation
+        this.maxRider = (maxRider >= 1) ? maxRider : 1; // Ensure minimum 1 rider per cycle
         this.numOfCycles = 0;
-        this.maxRider = maxRider;  // Customizable rider capacity per cycle
+        // Initialize Part3 and Part4A collections
+        this.waitingLine = new LinkedList<>();
+        this.rideHistory = new LinkedList<>();
     }
 
-    // 3. Getters and Setters for Part1 attributes
-    // Returns the name of the ride
+    // --------------------------
+    // Part1 Requirements: Getters and Setters for all instance variables
+    // --------------------------
+    /**
+     * Returns the name of the attraction
+     * @return rideName String containing attraction name
+     */
     public String getRideName() {
         return rideName;
     }
 
-    // Sets the name of the ride
-    // @param rideName New name for the attraction
+    /**
+     * Sets the name of the attraction
+     * @param rideName New name for the attraction
+     */
     public void setRideName(String rideName) {
         this.rideName = rideName;
     }
 
-    // Returns the type/classification of the ride
+    /**
+     * Returns the type/classification of the attraction
+     * @return rideType String containing attraction type
+     */
     public String getRideType() {
         return rideType;
     }
 
-    // Sets the type/classification of the ride
-    // @param rideType New type for the attraction
+    /**
+     * Sets the type/classification of the attraction
+     * @param rideType New type for the attraction
+     */
     public void setRideType(String rideType) {
         this.rideType = rideType;
     }
 
-    // Returns the employee operating the ride
+    /**
+     * Returns the operator assigned to the attraction
+     * @return operator Employee object responsible for operations
+     */
     public Employee getOperator() {
         return operator;
     }
 
-    // Assigns an employee to operate the ride
-    // @param operator Employee responsible for ride operations
+    /**
+     * Assigns an operator to the attraction
+     * @param operator Employee to be assigned as operator
+     */
     public void setOperator(Employee operator) {
         this.operator = operator;
     }
 
-    // Getters and Setters for Part5 attributes
-    // Returns maximum riders allowed per operational cycle
+    /**
+     * Returns maximum riders allowed per operational cycle
+     * @return maxRider Integer value of maximum capacity
+     */
     public int getMaxRider() {
         return maxRider;
     }
 
-    // Sets maximum riders per cycle (with validation)
-    // @param maxRider New maximum capacity (must be ≥ 1)
+    /**
+     * Sets maximum riders per cycle with validation (Part5 requirement)
+     * @param maxRider New maximum capacity (must be ≥1)
+     */
     public void setMaxRider(int maxRider) {
-        if (maxRider >= 1) {  // Validation: Minimum 1 rider per cycle
+        // Data validation: Ensure minimum 1 rider per cycle (Part5 requirement)
+        if (maxRider >= 1) {
             this.maxRider = maxRider;
+            System.out.println("[Success] " + rideName + " max riders per cycle updated to: " + maxRider);
         } else {
-            System.out.println("Error: Max riders per cycle must be ≥ 1. Current input: " + maxRider);
+            System.out.println("[Failure] Max riders must be ≥1. Current input: " + maxRider);
         }
     }
 
-    // Returns total number of operational cycles completed
+    /**
+     * Returns total number of completed operational cycles
+     * @return numOfCycles Integer count of cycles
+     */
     public int getNumOfCycles() {
         return numOfCycles;
     }
 
-    // 4. Implementation of RideInterface methods (Part2 framework with Part3-5 logic)
+    // numOfCycles only incremented via runOneCycle() - no setter to prevent external modification
+
     /**
-     * Adds a visitor to the ride's waiting queue
-     * @param visitor Visitor to be added (non-null)
+     * Returns the waiting queue of visitors
+     * @return waitingLine Queue<Visitor> containing waiting visitors
+     */
+    public Queue<Visitor> getWaitingLine() {
+        return waitingLine;
+    }
+
+    /**
+     * Returns the historical record of visitors who rode the attraction
+     * @return rideHistory LinkedList<Visitor> containing ride history
+     */
+    public LinkedList<Visitor> getRideHistory() {
+        return rideHistory;
+    }
+
+    // --------------------------
+    // Part3 Core: Implement 3 queue methods from RideInterface
+    // Each method prints success/failure messages (Part3 requirement)
+    // --------------------------
+
+    /**
+     * Adds a visitor to the waiting queue (FIFO - added to tail)
+     * @param visitor Visitor object to be added (non-null)
      */
     @Override
     public void addVisitorToQueue(Visitor visitor) {
-        if (visitor != null) {
-            waitingLine.offer(visitor);  // Queue-safe addition (returns false if full)
-            System.out.println("Success: Visitor " + visitor.getName() + " added to [" + rideName + "] waiting queue");
-        } else {
-            System.out.println("Failure: Cannot add null visitor to queue");
+        // 1. Validate visitor object (non-null check)
+        if (visitor == null) {
+            System.out.println("[Failure] Adding visitor to [" + rideName + "] queue: Visitor object is null");
+            return;
         }
+        // 2. Safe addition using offer() (Queue method - no capacity restrictions, no exceptions)
+        waitingLine.offer(visitor);
+        // 3. Print success message with current queue size
+        System.out.println("[Success] Visitor [" + visitor.getName() + "] joined [" + rideName + "] queue. Current queue size: " + waitingLine.size());
     }
 
     /**
-     * Removes the next visitor from the waiting queue (FIFO)
+     * Removes a visitor from the waiting queue (FIFO - removed from head)
+     * Prints failure message if queue is empty (Part3 requirement)
      */
     @Override
     public void removeVisitorFromQueue() {
+        // 1. Check if queue is empty
         if (waitingLine.isEmpty()) {
-            System.out.println("Failure: [" + rideName + "] waiting queue is empty - cannot remove visitor");
+            System.out.println("[Failure] Removing visitor from [" + rideName + "] queue: Queue is empty");
             return;
         }
-        Visitor removed = waitingLine.poll();  // Remove front visitor from queue
-        System.out.println("Success: Removed visitor " + removed.getName() + " from [" + rideName + "] waiting queue");
+        // 2. Remove and retrieve front visitor
+        Visitor removedVisitor = waitingLine.poll();
+        // 3. Print success message
+        System.out.println("[Success] Removed visitor from [" + rideName + "] queue: " + removedVisitor.getName() + ". Remaining queue size: " + waitingLine.size());
     }
 
     /**
-     * Prints all visitors in the waiting queue (in order)
+     * Prints detailed information of all visitors in queue in arrival order
+     * Clear formatting with empty queue message (Part3 requirement)
      */
     @Override
     public void printQueue() {
-        System.out.println("\n[" + rideName + "] Waiting Queue Details (" + waitingLine.size() + " visitors):");
+        System.out.println("\n=== [" + rideName + "] Waiting Queue Details ===");
+        // 1. Check if queue is empty
         if (waitingLine.isEmpty()) {
-            System.out.println("Queue is empty");
+            System.out.println("No visitors in queue currently");
+            System.out.println("=== Total visitors in queue: 0 ===");
             return;
         }
-        // Iterate through queue in insertion order
+        // 2. Traverse queue (foreach maintains FIFO order matching arrival sequence)
         int index = 1;
-        for (Visitor v : waitingLine) {
-            System.out.println(index + ". " + v);
+        for (Visitor visitor : waitingLine) {
+            System.out.println(index + ". " + visitor); // Reuse Visitor's toString() for complete details
             index++;
         }
+        // 3. Print total queue size
+        System.out.println("=== Total visitors in queue: " + waitingLine.size() + " ===");
     }
 
+    // --------------------------
+    // Part4A Reserved Methods (Implement RideInterface - framework only for Part3, to be completed later)
+    // --------------------------
     /**
-     * Adds a visitor to the ride's historical records
-     * @param visitor Visitor who completed the ride (non-null)
+     * Adds visitor to ride history (Part4A implementation pending)
+     * @param visitor Visitor to be added to history
      */
     @Override
     public void addVisitorToHistory(Visitor visitor) {
-        if (visitor != null) {
-            rideHistory.add(visitor);  // Append to end of history list
-            System.out.println("Success: Visitor " + visitor.getName() + " added to [" + rideName + "] ride history");
-        } else {
-            System.out.println("Failure: Cannot add null visitor to history");
-        }
+        System.out.println("[To be implemented] Add visitor [" + visitor.getName() + "] to [" + rideName + "] ride history");
     }
 
     /**
-     * Checks if a visitor exists in ride history (by unique Visitor ID)
-     * @param visitor Visitor to verify
-     * @return true if visitor exists in history, false otherwise
+     * Checks if visitor exists in ride history (Part4A implementation pending)
+     * @param visitor Visitor to verify in history
+     * @return boolean indicating presence in history
      */
     @Override
     public boolean checkVisitorFromHistory(Visitor visitor) {
-        if (visitor == null || rideHistory.isEmpty()) {
-            return false;
-        }
-        // Verify using unique Visitor ID to avoid name duplication issues
-        for (Visitor v : rideHistory) {
-            if (v.getVisitorId().equals(visitor.getVisitorId())) {
-                return true;
-            }
-        }
+        System.out.println("[To be implemented] Check if visitor [" + visitor.getName() + "] exists in [" + rideName + "] ride history");
         return false;
     }
 
     /**
-     * Returns total number of visitors in ride history
-     * @return Size of ride history collection
+     * Returns count of visitors in ride history (Part4A implementation pending)
+     * @return Integer count of historical visitors
      */
     @Override
     public int numberOfVisitors() {
-        return rideHistory.size();  // Return count of historical visitors
+        System.out.println("[To be implemented] Query [" + rideName + "] ride history visitor count");
+        return rideHistory.size();
     }
 
     /**
-     * Prints complete ride history using Iterator (Part4A requirement)
+     * Prints complete ride history (Part4A implementation pending)
      */
     @Override
     public void printRideHistory() {
-        System.out.println("\n[" + rideName + "] Ride History Details (" + rideHistory.size() + " visitors):");
-        if (rideHistory.isEmpty()) {
-            System.out.println("No visitor records in history");
-            return;
-        }
-        // Part4A requirement: Must use Iterator for traversal
-        java.util.Iterator<Visitor> iterator = rideHistory.iterator();
-        int index = 1;
-        while (iterator.hasNext()) {
-            Visitor v = iterator.next();
-            System.out.println(index + ". " + v);
-            index++;
-        }
+        System.out.println("[To be implemented] Print [" + rideName + "] ride history");
     }
 
+    // --------------------------
+    // Part5 Reserved Method (Implement RideInterface - framework only for Part3, to be completed later)
+    // --------------------------
     /**
-     * Runs one complete operational cycle of the ride
-     * - Checks for operator assignment
-     * - Processes riders from waiting queue (up to maxRider)
-     * - Updates cycle count and ride history
+     * Executes one operational cycle (Part5 implementation pending)
      */
     @Override
     public void runOneCycle() {
-        // 1. Validate operator assignment
-        if (operator == null) {
-            System.out.println("Failure: [" + rideName + "] has no assigned operator - cannot run");
-            return;
-        }
-        // 2. Check for waiting visitors
-        if (waitingLine.isEmpty()) {
-            System.out.println("Failure: [" + rideName + "] waiting queue is empty - cannot run");
-            return;
-        }
-        // 3. Process riders (up to max capacity or remaining queue size)
-        int takeNum = Math.min(maxRider, waitingLine.size());
-        System.out.println("\n[" + rideName + "] starting operational cycle - planned riders: " + takeNum);
-
-        for (int i = 0; i < takeNum; i++) {
-            Visitor v = waitingLine.poll();  // Remove from queue
-            addVisitorToHistory(v);          // Add to ride history
-        }
-        // 4. Update operational metrics
-        numOfCycles++;
-        System.out.println("Success: [" + rideName + "] completed cycle. Total cycles: " + numOfCycles);
+        System.out.println("[To be implemented] [" + rideName + "] execute one operational cycle");
     }
 
-    // 5. Overridden toString() (Part1) - includes collection and cycle information
+    // --------------------------
+    // Override toString(): Print complete attraction information (aids debugging/verification)
+    // --------------------------
     /**
-     * Returns string representation of the ride with operational details
-     * @return Formatted string with ride info, capacity, and statistics
+     * Returns string representation of the Ride object with complete details
+     * @return Formatted string containing all attributes and status
      */
     @Override
     public String toString() {
         return "Ride{" +
-                "Name='" + rideName + '\'' +
+                "Attraction Name='" + rideName + '\'' +
                 ", Type='" + rideType + '\'' +
                 ", Operator=" + (operator != null ? operator.getName() : "Unassigned") +
                 ", Max Riders/Cycle=" + maxRider +
-                ", Total Cycles=" + numOfCycles +
+                ", Completed Cycles=" + numOfCycles +
                 ", Waiting Queue Size=" + waitingLine.size() +
                 ", Historical Visitors=" + rideHistory.size() +
                 '}';
