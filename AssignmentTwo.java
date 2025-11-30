@@ -1,121 +1,272 @@
-import java.util.Queue;
-
 /**
- * Theme Park Management System - Assignment Two Implementation
- * Demonstrates core functionality for theme park ride management, including Part1 class initialization
- * and Part3 waiting queue operations, with placeholders for future expansion (Parts4-7)
+ * 主类：整合Part1-7所有模块的演示入口（Part1要求）
+ * 包含各模块的演示方法，可直接运行验证功能
  */
 public class AssignmentTwo {
-    // Main method: Program entry point (supports demo execution for all parts)
+    // 主方法：程序入口（Part1要求）
     public static void main(String[] args) {
         System.out.println("=== PROG2004 Theme Park Management System (A2) ===");
-        testPartOneClasses();
-
         AssignmentTwo demo = new AssignmentTwo();
-        System.out.println("\n" + "=".repeat(50));
-        System.out.println("=== Part3: Waiting Line (Queue) Demonstration ===");
-        demo.partThree();
+
+        // 按模块顺序演示（可注释不需要的模块）
+        demo.testPartOneClasses();  // Part1：类与继承测试
+        demo.partThree();           // Part3：等待队列
+        demo.partFourA();           // Part4A：骑行历史
+        demo.partFourB();           // Part4B：历史排序
+        demo.partFive();            // Part5：周期运行
+        demo.partSix();             // Part6：导出文件
+        demo.partSeven();           // Part7：导入文件
     }
 
-    /**
-     * Helper method to verify Part1 class creation and property assignment
-     * Tests Employee, Visitor, and Ride object initialization with complete attribute configuration
-     */
+    // --------------------------
+    // Part1：测试类创建与继承（Part1要求，可选调试用）
+    // --------------------------
     private static void testPartOneClasses() {
-        // 1. Create Employee instance with complete Part1 attributes
-        Employee rollerCoasterOperator = new Employee(
+        System.out.println("\n" + "=".repeat(50));
+        System.out.println("=== Part1: Class & Inheritance Test ===");
+
+        // 1. 创建Employee（操作员）
+        Employee operator = new Employee(
                 "Zhang San", 30, "0412345678",
-                "EMP-1001", "Roller Coaster"
+                "EMP-1001", "Roller Coaster Operator"
         );
 
-        // 2. Create Visitor instance with member status configuration
-        Visitor vipVisitor = new Visitor(
+        // 2. 创建Visitor（游客）
+        Visitor vip = new Visitor(
                 "Li Si", 25, "0487654321",
-                "VIS-123456", true
+                "VIS-12345", true
         );
 
-        // 3. Create Ride instance associated with operator (Part1 requirement)
+        // 3. 创建Ride（项目）
         Ride rollerCoaster = new Ride(
-                "Speed Roller Coaster", "Roller Coaster", 4,
-                rollerCoasterOperator
+                "Speed Roller Coaster", "Thrill Ride",
+                4, operator
         );
 
-        // Verify encapsulation and inheritance through object printing
-        System.out.println("\n【Testing Employee Object】");
-        System.out.println(rollerCoasterOperator);
-
-        System.out.println("\n【Testing Visitor Object】");
-        System.out.println(vipVisitor);
-
-        System.out.println("\n【Testing Ride Object】");
+        // 4. 打印对象信息（验证封装与继承）
+        System.out.println("\n【Employee对象】");
+        System.out.println(operator);
+        System.out.println("\n【Visitor对象】");
+        System.out.println(vip);
+        System.out.println("\n【Ride对象】");
         System.out.println(rollerCoaster);
     }
 
-    // ---------------------- Placeholder methods for future expansion ----------------------
-
+    // --------------------------
+    // Part3：等待队列演示（Part3要求）
+    // --------------------------
     public void partThree() {
-        // Step 1: Initialize Ride with associated Operator (Part1 mandatory requirement)
-        System.out.println("\n【Step 1: Initialize Ride and Operator】");
-        Employee ferrisWheelOperator = new Employee(
+        System.out.println("\n" + "=".repeat(50));
+        System.out.println("=== Part3: Waiting Line (Queue) Demo ===");
+
+        // 1. 创建Ride和操作员
+        Employee ferrisOperator = new Employee(
                 "Wang Wu", 28, "0498765432",
-                "EMP-1002", "Ferris Wheel Operator" // Employee ID and position (Part1 specific attributes)
+                "EMP-1002", "Ferris Wheel Operator"
         );
-        Ride giantFerrisWheel = new Ride(
-                "Giant Ferris Wheel", "Family Ride", 6, // Ride name, type, max riders per cycle (Part1 attributes)
-                ferrisWheelOperator // Associate operator with ride
+        Ride ferrisWheel = new Ride(
+                "Giant Ferris Wheel", "Family Ride",
+                6, ferrisOperator
         );
-        System.out.println("Successfully created Ride: " + giantFerrisWheel.getRideName());
-        System.out.println("Assigned Operator: " + giantFerrisWheel.getOperator().getName());
 
-        // Step 2: Add minimum 5 Visitors to waiting queue (Part3 mandatory requirement)
-        System.out.println("\n【Step 2: Add 5 Visitors to Waiting Queue】");
-        // Create 5 visitors with mixed member/non-member status (covers all Visitor attributes)
-        Visitor visitor1 = new Visitor("Zhao Liu", 22, "0411223344", "VIS-654321", true);
-        Visitor visitor2 = new Visitor("Chen Qi", 35, "0422334455", "VIS-654322", false);
-        Visitor visitor3 = new Visitor("Yang Ba", 18, "0433445566", "VIS-654323", true);
-        Visitor visitor4 = new Visitor("Huang Jiu", 40, "0444556677", "VIS-654324", false);
-        Visitor visitor5 = new Visitor("Zhou Shi", 27, "0455667788", "VIS-654325", true);
-        // Add visitors using Ride's queue method (auto-generates success/failure messages)
-        giantFerrisWheel.addVisitorToQueue(visitor1);
-        giantFerrisWheel.addVisitorToQueue(visitor2);
-        giantFerrisWheel.addVisitorToQueue(visitor3);
-        giantFerrisWheel.addVisitorToQueue(visitor4);
-        giantFerrisWheel.addVisitorToQueue(visitor5);
+        // 2. 添加5个游客到队列（Part3要求：至少5个）
+        System.out.println("\n【Step1：添加5个游客到队列】");
+        ferrisWheel.addVisitorToQueue(new Visitor("Mia", 22, "mia@test.com", "VIS-001", true));
+        ferrisWheel.addVisitorToQueue(new Visitor("Lucas", 29, "lucas@test.com", "VIS-002", false));
+        ferrisWheel.addVisitorToQueue(new Visitor("Sophia", 21, "sophia@test.com", "VIS-003", true));
+        ferrisWheel.addVisitorToQueue(new Visitor("Ethan", 35, "ethan@test.com", "VIS-004", false));
+        ferrisWheel.addVisitorToQueue(new Visitor("Olivia", 27, "olivia@test.com", "VIS-005", true));
 
-        // Step 3: Remove 1 visitor from queue (FIFO principle - removes front of queue)
-        System.out.println("\n【Step 3: Remove 1 Visitor from Queue (FIFO)】");
-        giantFerrisWheel.removeVisitorFromQueue();
+        // 3. 移除1个游客（Part3要求）
+        System.out.println("\n【Step2：移除1个游客（FIFO）】");
+        ferrisWheel.removeVisitorFromQueue();
 
-        // Step 4: Print remaining visitors to verify removal result
-        System.out.println("\n【Step 4: Print Remaining Visitors in Queue】");
-        giantFerrisWheel.printQueue();
+        // 4. 打印剩余队列（Part3要求）
+        System.out.println("\n【Step3：打印剩余队列】");
+        ferrisWheel.printQueue();
     }
 
-    /**
-     * Will implement visitor ride history tracking functionality
-     */
-    public void partFourA() {}
+    // --------------------------
+    // Part4A：骑行历史演示（Part4A要求）
+    // --------------------------
+    public void partFourA() {
+        System.out.println("\n" + "=".repeat(50));
+        System.out.println("=== Part4A: Ride History Demo ===");
 
-    /**
-     * Will implement sorting algorithms for ride history data
-     */
-    public void partFourB() {}
+        // 1. 创建Ride和操作员
+        Employee hauntedOperator = new Employee(
+                "Liu Yang", 33, "0477665544",
+                "EMP-1003", "Haunted House Operator"
+        );
+        Ride hauntedHouse = new Ride(
+                "Haunted House", "Horror Ride",
+                3, hauntedOperator
+        );
 
-    /**
-     * Part Five: Run Ride Cycle (placeholder for future implementation)
-     * Will implement ride operation cycle execution logic
-     */
-    public void partFive() {}
+        // 2. 添加5个游客到历史（Part4A要求：至少5个）
+        System.out.println("\n【Step1：添加5个游客到历史】");
+        hauntedHouse.addVisitorToHistory(new Visitor("Noah", 30, "noah@test.com", "VIS-101", false));
+        hauntedHouse.addVisitorToHistory(new Visitor("Emma", 22, "emma@test.com", "VIS-102", true));
+        hauntedHouse.addVisitorToHistory(new Visitor("Liam", 28, "liam@test.com", "VIS-103", false));
+        hauntedHouse.addVisitorToHistory(new Visitor("Ava", 25, "ava@test.com", "VIS-104", true));
+        hauntedHouse.addVisitorToHistory(new Visitor("Elijah", 24, "elijah@test.com", "VIS-105", false));
 
-    /**
-     * Part Six: Write to File (placeholder for future implementation)
-     * Will implement data persistence to file storage
-     */
-    public void partSix() {}
+        // 3. 检查游客是否在历史中（Part4A要求）
+        System.out.println("\n【Step2：检查游客是否在历史】");
+        Visitor checkEmma = new Visitor("Emma", 22, "emma@test.com", "VIS-102", true);
+        hauntedHouse.checkVisitorFromHistory(checkEmma);
+        Visitor checkJack = new Visitor("Jack", 30, "jack@test.com", "VIS-999", false);
+        hauntedHouse.checkVisitorFromHistory(checkJack);
 
-    /**
-     * Part Seven: Read from File (placeholder for future implementation)
-     * Will implement data retrieval from file storage
-     */
-    public void partSeven() {}
+        // 4. 打印历史人数（Part4A要求）
+        System.out.println("\n【Step3：打印历史人数】");
+        hauntedHouse.numberOfVisitors();
+
+        // 5. 打印所有历史游客（Part4A要求：用Iterator）
+        System.out.println("\n【Step4：打印所有历史游客】");
+        hauntedHouse.printRideHistory();
+    }
+
+    // --------------------------
+    // Part4B：历史排序演示（Part4B要求）
+    // --------------------------
+    public void partFourB() {
+        System.out.println("\n" + "=".repeat(50));
+        System.out.println("=== Part4B: Ride History Sorting Demo ===");
+
+        // 1. 创建Ride、操作员和比较器
+        Employee bumperOperator = new Employee(
+                "Zhang Wei", 31, "0466554433",
+                "EMP-1004", "Bumper Cars Operator"
+        );
+        Ride bumperCars = new Ride(
+                "Bumper Cars", "Family Ride",
+                4, bumperOperator
+        );
+        VisitorComparator comparator = new VisitorComparator();  // 自定义比较器
+
+        // 2. 添加5个游客到历史（Part4B要求：至少5个）
+        System.out.println("\n【Step1：添加5个游客到历史（未排序）】");
+        bumperCars.addVisitorToHistory(new Visitor("Noah", 30, "noah@test.com", "VIS-201", false));
+        bumperCars.addVisitorToHistory(new Visitor("Emma", 22, "emma@test.com", "VIS-202", true));
+        bumperCars.addVisitorToHistory(new Visitor("Liam", 28, "liam@test.com", "VIS-203", false));
+        bumperCars.addVisitorToHistory(new Visitor("Ava", 25, "ava@test.com", "VIS-204", true));
+        bumperCars.addVisitorToHistory(new Visitor("Noah", 24, "noah2@test.com", "VIS-205", false));
+
+        // 3. 打印排序前的历史（Part4B要求）
+        System.out.println("\n【Step2：打印排序前的历史】");
+        bumperCars.printRideHistory();
+
+        // 4. 排序历史（Part4B要求）
+        System.out.println("\n【Step3：排序历史（会员优先→年龄升序）】");
+        bumperCars.sortRideHistory(comparator);
+
+        // 5. 打印排序后的历史（Part4B要求）
+        System.out.println("\n【Step4：打印排序后的历史】");
+        bumperCars.printRideHistory();
+    }
+
+    // --------------------------
+    // Part5：周期运行演示（Part5要求）
+    // --------------------------
+    public void partFive() {
+        System.out.println("\n" + "=".repeat(50));
+        System.out.println("=== Part5: Run Ride Cycle Demo ===");
+
+        // 1. 创建Ride和操作员
+        Employee rollerOperator = new Employee(
+                "Chen Qi", 35, "0455443322",
+                "EMP-1005", "Roller Coaster Operator"
+        );
+        Ride speedCoaster = new Ride(
+                "Speed Coaster", "Thrill Ride",
+                4, rollerOperator  // 单周期载客4人
+        );
+
+        // 2. 添加10个游客到队列（Part5要求：至少10个）
+        System.out.println("\n【Step1：添加10个游客到队列】");
+        for (int i = 1; i <= 10; i++) {
+            speedCoaster.addVisitorToQueue(new Visitor(
+                    "Visitor" + i, 20 + i,
+                    "visitor" + i + "@test.com",
+                    "VIS-30" + i, i % 2 == 0  // 偶数为会员
+            ));
+        }
+
+        // 3. 打印运行前的队列（Part5要求）
+        System.out.println("\n【Step2：打印运行前的队列】");
+        speedCoaster.printQueue();
+
+        // 4. 运行1个周期（Part5要求）
+        System.out.println("\n【Step3：运行1个周期】");
+        speedCoaster.runOneCycle();
+
+        // 5. 打印运行后的队列（Part5要求）
+        System.out.println("\n【Step4：打印运行后的队列】");
+        speedCoaster.printQueue();
+
+        // 6. 打印运行后的历史（Part5要求）
+        System.out.println("\n【Step5：打印运行后的历史】");
+        speedCoaster.printRideHistory();
+    }
+
+    // --------------------------
+    // Part6：导出文件演示（Part6要求）
+    // --------------------------
+    public void partSix() {
+        System.out.println("\n" + "=".repeat(50));
+        System.out.println("=== Part6: Export Ride History to File ===");
+
+        // 1. 创建Ride和操作员，添加5个游客（Part6要求：至少5个）
+        Employee waterOperator = new Employee(
+                "Yang Ba", 29, "0444332211",
+                "EMP-1006", "Water Ride Operator"
+        );
+        Ride waterSlide = new Ride(
+                "Tornado Water Slide", "Water Ride",
+                2, waterOperator
+        );
+        System.out.println("\n【Step1：添加5个游客到历史】");
+        waterSlide.addVisitorToHistory(new Visitor("Mia", 23, "mia@test.com", "VIS-401", true));
+        waterSlide.addVisitorToHistory(new Visitor("Lucas", 29, "lucas@test.com", "VIS-402", false));
+        waterSlide.addVisitorToHistory(new Visitor("Sophia", 21, "sophia@test.com", "VIS-403", true));
+        waterSlide.addVisitorToHistory(new Visitor("Ethan", 35, "ethan@test.com", "VIS-404", false));
+        waterSlide.addVisitorToHistory(new Visitor("Olivia", 27, "olivia@test.com", "VIS-405", true));
+
+        // 2. 导出历史到CSV文件（Part6要求）
+        String exportPath = "water_slide_history.csv";  // 文件路径（可自定义）
+        System.out.println("\n【Step2：导出历史到文件】");
+        waterSlide.exportRideHistory(exportPath);
+    }
+
+    // --------------------------
+    // Part7：导入文件演示（Part7要求）
+    // --------------------------
+    public void partSeven() {
+        System.out.println("\n" + "=".repeat(50));
+        System.out.println("=== Part7: Import Ride History from File ===");
+
+        // 1. 创建Ride和操作员
+        Employee importOperator = new Employee(
+                "Huang Jiu", 32, "0433221100",
+                "EMP-1007", "Import Test Operator"
+        );
+        Ride importRide = new Ride(
+                "Import Test Ride", "Family Ride",
+                5, importOperator
+        );
+
+        // 2. 导入Part6导出的文件（Part7要求）
+        String importPath = "water_slide_history.csv";  // 与Part6的导出路径一致
+        System.out.println("\n【Step1：从文件导入历史】");
+        importRide.importRideHistory(importPath);
+
+        // 3. 打印导入后的人数（Part7要求）
+        System.out.println("\n【Step2：打印导入后的人数】");
+        importRide.numberOfVisitors();
+
+        // 4. 打印导入后的所有游客（Part7要求）
+        System.out.println("\n【Step3：打印导入后的所有游客】");
+        importRide.printRideHistory();
+    }
 }

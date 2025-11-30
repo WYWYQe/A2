@@ -1,63 +1,25 @@
 /**
- * RideInterface: Defines core behaviors that all Ride objects must implement
- * Constrains queue management, ride history, operation cycle and other functions to ensure behavioral consistency
+ * Ride接口：定义所有Ride对象必须实现的核心行为（Part2要求）
+ * 覆盖队列管理（Part3）、骑行历史（Part4）、周期运行（Part5）功能
  */
 public interface RideInterface {
     // --------------------------
-    // Part3: Waiting Queue Management (FIFO)
+    // Part3：等待队列管理方法
     // --------------------------
-    /**
-     * Add a visitor to the waiting queue
-     * @param visitor The visitor object to be added (non-null)
-     */
-    void addVisitorToQueue(Visitor visitor);
-
-    /**
-     * Remove the front visitor from the waiting queue (FIFO principle)
-     * Print failure prompt if the queue is empty
-     */
-    void removeVisitorFromQueue();
-
-    /**
-     * Print details of all visitors in the waiting queue (in order of joining)
-     * Print prompt message if the queue is empty
-     */
-    void printQueue();
+    void addVisitorToQueue(Visitor visitor);   // 添加游客到队列（FIFO）
+    void removeVisitorFromQueue();             // 从队列移除队首游客
+    void printQueue();                         // 打印队列所有游客
 
     // --------------------------
-    // Part4: Ride History Management
+    // Part4：骑行历史管理方法
     // --------------------------
-    /**
-     * Add a visitor who has completed the ride to the history record
-     * @param visitor The visitor object who completed the ride (non-null)
-     */
-    void addVisitorToHistory(Visitor visitor);
-
-    /**
-     * Check if a visitor exists in the ride history
-     * @param visitor The visitor object to be checked
-     * @return true=exists, false=does not exist (or history record is empty)
-     */
-    boolean checkVisitorFromHistory(Visitor visitor);
-
-    /**
-     * Return the total number of visitors in the ride history
-     * @return Number of historical visitors (int, >=0)
-     */
-    int numberOfVisitors();
-
-    /**
-     * Print details of all visitors in the ride history (must traverse with Iterator, required by Part4A)
-     * Print prompt message if the history record is empty
-     */
-    void printRideHistory();
+    void addVisitorToHistory(Visitor visitor); // 添加游客到骑行历史
+    boolean checkVisitorFromHistory(Visitor visitor); // 检查游客是否在历史中
+    int numberOfVisitors();                    // 返回历史游客总数
+    void printRideHistory();                   // 打印历史所有游客（需用Iterator）
 
     // --------------------------
-    // Part5: Ride Cycle Operation
+    // Part5：骑行周期运行方法
     // --------------------------
-    /**
-     * Run one ride cycle: Take visitors from queue → Add to history record → Update operation count
-     * Must first check "if there is an operator" and "if the queue has visitors", otherwise cannot run
-     */
-    void runOneCycle();
+    void runOneCycle();                        // 运行一次骑行周期
 }
